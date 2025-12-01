@@ -471,10 +471,3 @@
 
 - 项目地址：https://github.com/yourusername/LanYaoGateway
 - 问题反馈：https://github.com/yourusername/LanYaoGateway/issues
-
----
-
-**文档版本**：v1.0
-**发布日期**：2024-01-01
-**更新记录**：
-- v1.0：初始版本，包含网关硬件设计、软件架构、双模式运行机制等核心内容
