@@ -471,7 +471,6 @@
 
 - 项目地址：https://github.com/yourusername/LanYaoGateway
 - 问题反馈：https://github.com/yourusername/LanYaoGateway/issues
-- 技术支持：support@lanyaogateway.com
 
 ---
 
