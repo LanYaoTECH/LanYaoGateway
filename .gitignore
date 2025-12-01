@@ -1,0 +1,208 @@
+# 依赖包
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 构建输出
+dist/
+dist-ssr/
+*.local
+
+# 编辑器目录和文件
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 环境变量文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 日志文件
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 运行时数据
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# 测试覆盖率目录
+coverage
+*.lcov
+
+# nyc测试覆盖率
+.nyc_output
+
+# 依赖目录
+jspm_packages/
+
+# npm缓存目录
+.npm
+
+# ESLint缓存
+.eslintcache
+
+# Node.js REPL历史记录
+.node_repl_history
+
+# npm打包输出
+*.tgz
+
+# Yarn完整性文件
+.yarn-integrity
+
+# 环境变量配置文件
+.env
+.env.test
+
+# Parcel打包缓存
+.cache
+.parcel-cache
+
+# Next.js构建输出
+.next
+out
+
+# Nuxt.js构建输出
+.nuxt
+dist
+
+# Gatsby文件
+.cache/
+# 如果项目使用Gatsby而非Next.js，请取消注释public行
+# https://nextjs.org/blog/next-9-1#public-directory-support
+# public
+
+# VuePress构建输出
+.vuepress/dist
+
+# Serverless目录
+.serverless/
+
+# FuseBox缓存
+.fusebox/
+
+# DynamoDB本地文件
+.dynamodb/
+
+# TernJS端口文件
+.tern-port
+
+# VSCode扩展测试版本
+.vscode-test
+
+# Yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ESP32/嵌入式开发
+.pio/
+build/
+*.elf
+*.bin
+*.map
+*.hex
+*.o
+*.d
+*.s
+*.list
+*.pp
+*.dSYM/
+
+# PlatformIO
+.pio
+.pioenvs/
+.piolibdeps/
+lib/
+
+# Arduino
+*.ino.*
+*.o
+*.gch
+*.pde
+*.elf
+*.map
+*.hex
+*.bin
+
+# C/C++
+*.o
+*.a
+*.la
+*.lo
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+
+# 临时文件
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# 操作系统生成的文件
+Thumbs.db
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# 测试
+coverage/
+.nyc_output/
+
+# 日志
+logs/
+*.log
+
+# 运行时数据
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# 云服务器日志
+access.log
+error.log
+nginx.log
+nodejs.log
+
+# 备份文件
+*.bak
+*.backup
+*.old
+*.swp
+*~
+
+# 包管理器文件
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
