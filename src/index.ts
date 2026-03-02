@@ -140,7 +140,7 @@ function loadDevicesOnStartup(): void {
 }
 
 server.listen(PORT, () => {
-  console.log(`[Gateway] LanYao Gateway running on port ${PORT}`);
+  console.log(`[Gateway] RayCore Gateway running on port ${PORT}`);
   console.log(`[Gateway] REST API: http://localhost:${PORT}/api`);
   console.log(`[Gateway] WebSocket: ws://localhost:${PORT}/ws`);
   loadDevicesOnStartup();

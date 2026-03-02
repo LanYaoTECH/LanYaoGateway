@@ -1,8 +1,8 @@
-# LanYao Gateway
+# RayCore Gateway
 
-澜鳐生物管理系统 — 后端网关服务。
+RayCore Gateway（LanYaoGateway）— 澜鳐生物管理系统后端网关服务。
 
-作为前端 (LanYaoTerminal) 与泵设备 (AbyssoRayPumpNG / ESP32) 之间的中间层，提供设备管理、命令转发、状态聚合和操作日志记录功能。
+作为前端（RayCore Terminal / LanYaoTerminal）与泵设备 (AbyssoRayPumpNG / ESP32) 之间的中间层，提供设备管理、命令转发、状态聚合和操作日志记录功能。
 
 ## 架构
 
