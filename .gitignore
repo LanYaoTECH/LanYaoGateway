@@ -8,6 +8,12 @@ lerna-debug.log*
 
 # 构建输出
 dist/
+
+# 数据库
+data/
+*.db
+*.db-wal
+*.db-shm
 dist-ssr/
 *.local
 
