@@ -43,6 +43,10 @@ router.post('/', (req: Request, res: Response) => {
     res.status(400).json({ error: '设备名称和IP地址不能为空' });
     return;
   }
+  if (type !== 'pump' && type !== 'treadmill') {
+    res.status(400).json({ error: `不支持的设备类型: ${type}` });
+    return;
+  }
 
   const db = getDatabase();
   const id = crypto.randomUUID();
@@ -110,9 +114,10 @@ router.delete('/:id', (req: Request, res: Response) => {
   // Disconnect first
   deviceConnectionManager.removeDevice(device.id);
 
+  // 先记日志 (此时 FK 仍有效), 再删设备
+  logService.addLog(device.id, device.name, 'device_deleted');
   db.prepare('DELETE FROM devices WHERE id = ?').run(req.params.id);
 
-  logService.addLog(device.id, device.name, 'device_deleted');
   res.json({ message: '设备已删除', id: device.id });
 });
 

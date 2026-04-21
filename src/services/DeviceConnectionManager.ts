@@ -1,20 +1,21 @@
 import WebSocket from 'ws';
-import type { Device, PumpStatus } from '../types.js';
+import type { Device, DeviceStatus } from '../types.js';
 import { logService } from './LogService.js';
 
 interface DeviceConnection {
   device: Device;
   ws: WebSocket | null;
   connected: boolean;
-  lastStatus: PumpStatus | null;
+  lastStatus: DeviceStatus | null;
   reconnectTimer: ReturnType<typeof setTimeout> | null;
   reconnectAttempts: number;
 }
 
-type StatusCallback = (deviceId: string, status: PumpStatus) => void;
+type StatusCallback = (deviceId: string, status: DeviceStatus) => void;
 type ConnectionCallback = (deviceId: string, connected: boolean) => void;
 
-const RECONNECT_INTERVAL = 5000;
+const RECONNECT_INTERVAL = 2000;
+const HANDSHAKE_TIMEOUT  = 15000;
 const MAX_RECONNECT_ATTEMPTS = 0; // 0 = unlimited
 
 export class DeviceConnectionManager {
@@ -30,7 +31,7 @@ export class DeviceConnectionManager {
     this.connectionCallbacks.push(callback);
   }
 
-  private emitStatus(deviceId: string, status: PumpStatus): void {
+  private emitStatus(deviceId: string, status: DeviceStatus): void {
     for (const cb of this.statusCallbacks) {
       cb(deviceId, status);
     }
@@ -100,7 +101,7 @@ export class DeviceConnectionManager {
     console.log(`[DeviceManager] Connecting to device ${conn.device.name} at ${url}`);
 
     try {
-      const ws = new WebSocket(url, { handshakeTimeout: 5000 });
+      const ws = new WebSocket(url, { handshakeTimeout: HANDSHAKE_TIMEOUT });
       conn.ws = ws;
 
       ws.on('open', () => {
@@ -112,20 +113,21 @@ export class DeviceConnectionManager {
           ip: conn.device.ip,
           port: conn.device.port,
         });
-        // Request motor list on connect
-        ws.send(JSON.stringify({ cmd: 'list' }));
+        // For pump devices, request motor list. Treadmill has no such cmd.
+        if (conn.device.type === 'pump') {
+          ws.send(JSON.stringify({ cmd: 'list' }));
+        }
       });
 
       ws.on('message', (data) => {
         try {
           const message = JSON.parse(data.toString());
           if (message.type === 'status') {
-            conn.lastStatus = message as PumpStatus;
-            this.emitStatus(deviceId, message as PumpStatus);
+            conn.lastStatus = message as DeviceStatus;
+            this.emitStatus(deviceId, message as DeviceStatus);
           }
           // list responses are also forwarded via status callback (they have type: 'list')
           if (message.type === 'list') {
-            // Forward list responses too
             this.emitStatus(deviceId, message);
           }
         } catch (e) {
@@ -199,7 +201,7 @@ export class DeviceConnectionManager {
     }
   }
 
-  getDeviceStatus(deviceId: string): { connected: boolean; lastStatus: PumpStatus | null } {
+  getDeviceStatus(deviceId: string): { connected: boolean; lastStatus: DeviceStatus | null } {
     const conn = this.connections.get(deviceId);
     if (!conn) {
       return { connected: false, lastStatus: null };
@@ -207,8 +209,8 @@ export class DeviceConnectionManager {
     return { connected: conn.connected, lastStatus: conn.lastStatus };
   }
 
-  getAllStatuses(): Record<string, { connected: boolean; lastStatus: PumpStatus | null }> {
-    const result: Record<string, { connected: boolean; lastStatus: PumpStatus | null }> = {};
+  getAllStatuses(): Record<string, { connected: boolean; lastStatus: DeviceStatus | null }> {
+    const result: Record<string, { connected: boolean; lastStatus: DeviceStatus | null }> = {};
     for (const [deviceId, conn] of this.connections) {
       result[deviceId] = {
         connected: conn.connected,

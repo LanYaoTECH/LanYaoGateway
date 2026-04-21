@@ -8,20 +8,43 @@ export class LogService {
     action: string,
     details?: Record<string, unknown>,
     result: 'success' | 'error' = 'success'
-  ): LogEntry {
+  ): LogEntry | null {
     const db = getDatabase();
     const stmt = db.prepare(`
       INSERT INTO logs (device_id, device_name, action, details, result)
       VALUES (?, ?, ?, ?, ?)
     `);
-    const info = stmt.run(
-      deviceId,
-      deviceName,
-      action,
-      details ? JSON.stringify(details) : null,
-      result
-    );
-    return this.getLogById(info.lastInsertRowid as number)!;
+    // 设备已被删除时 device_id 仍是 UUID 字符串, 但 devices 表已无此行,
+    // 会触发 FK 约束失败. 兜底: 把 device_id 置 null 重试一次.
+    try {
+      const info = stmt.run(
+        deviceId,
+        deviceName,
+        action,
+        details ? JSON.stringify(details) : null,
+        result
+      );
+      return this.getLogById(info.lastInsertRowid as number) ?? null;
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes('FOREIGN KEY')) {
+        try {
+          const info = stmt.run(
+            null,
+            deviceName,
+            action,
+            details ? JSON.stringify(details) : null,
+            result
+          );
+          return this.getLogById(info.lastInsertRowid as number) ?? null;
+        } catch (e2) {
+          console.warn('[LogService] addLog fallback failed:', e2);
+          return null;
+        }
+      }
+      console.warn('[LogService] addLog failed:', msg);
+      return null;
+    }
   }
 
   getLogById(id: number): LogEntry | undefined {

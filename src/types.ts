@@ -1,9 +1,11 @@
 // ===== Device Types =====
 
+export type DeviceType = 'pump' | 'treadmill';
+
 export interface Device {
   id: string;
   name: string;
-  type: 'pump';
+  type: DeviceType;
   ip: string;
   port: number;
   created_at: string;
@@ -12,7 +14,7 @@ export interface Device {
 
 export interface DeviceCreateInput {
   name: string;
-  type: 'pump';
+  type: DeviceType;
   ip: string;
   port?: number;
 }
@@ -58,11 +60,16 @@ export type FrontendMessage =
   | { type: 'unsubscribe'; deviceId: string };
 
 export type GatewayMessage =
-  | { type: 'device_status'; deviceId: string; data: PumpStatus }
+  | { type: 'device_status'; deviceId: string; data: DeviceStatus }
   | { type: 'device_connection'; deviceId: string; connected: boolean }
   | { type: 'error'; message: string };
 
-// ===== Pump Status (from ESP32 firmware) =====
+// ===== Device Status (generic; type-discriminated by device_type) =====
+
+// Any JSON status object (gateway is pass-through)
+export type DeviceStatus = PumpStatus | TreadmillStatus | Record<string, unknown>;
+
+// ===== Pump Status (from ESP32 pump firmware) =====
 
 export interface MotorStatus {
   id: number;
@@ -85,6 +92,7 @@ export interface PeriodStatus {
 
 export interface PumpStatus {
   type: 'status';
+  device_type?: 'pump';
   uptime: number;
   wifi: boolean;
   mode: 'raw' | 'period';
@@ -95,6 +103,33 @@ export interface PumpStatus {
 export interface PumpListResponse {
   type: 'list';
   motors: Array<{ id: number; state: number }>;
+}
+
+// ===== Treadmill Status (小动物跑步机固件) =====
+
+export type TreadmillState = 'idle' | 'running' | 'paused' | 'estopped';
+
+export interface TreadmillSettings {
+  target_speed_mps: number;
+  fwd: boolean;
+  target_time_sec: number;
+}
+
+export interface TreadmillRuntime {
+  cur_speed_mps: number;
+  elapsed_sec: number;
+  distance_m: number;
+  target_distance_m: number;
+}
+
+export interface TreadmillStatus {
+  type: 'status';
+  device_type: 'treadmill';
+  uptime: number;
+  wifi: boolean;
+  state: TreadmillState;
+  settings: TreadmillSettings;
+  runtime: TreadmillRuntime;
 }
 
 // ===== Motor State Enum =====
