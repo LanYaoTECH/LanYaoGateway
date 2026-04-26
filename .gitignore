@@ -8,6 +8,8 @@ lerna-debug.log*
 
 # 构建输出
 dist/
+release/
+.cache/
 
 # 数据库
 data/
